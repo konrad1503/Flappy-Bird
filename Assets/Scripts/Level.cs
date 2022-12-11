@@ -7,23 +7,49 @@ public class Level : MonoBehaviour
 	private const float CAMERA_OTROGRAPHIC_SIZE = 50f;
 	private const float PIPE_WIDTH = 7.8f;
 	private const float PIPE_HEAD_HEIGHT = 3.8f;
-	private const float PIPE_MOVE_SPEED = 3f;
+	private const float PIPE_MOVE_SPEED = 30f;
 	private const float PIPE_DESTROY_X_POSITION = -100f;
+	private const float PIPE_SPAWN_X_POSITION = +100f;
 
 	private List<Pipe> pipeList;
 
+	private float pipeSpawnTimer;
+	private float pipeSpawnTimermax;
+	private float gapSize;
+
+
 	private void Awake()  {
 		pipeList = new List<Pipe>();
+		pipeSpawnTimermax = 1.5f;
+		gapSize = 50f;
 	}
 
 	private void Start() {
+		/*
 		CreatePipe(40f, 20f, true);
 		CreatePipe(40f, 20f, false);
 		CreateGapPipes(50f, 10f, 40f);
+		*/
 	}
 
 	private void Update() {
 		HandlePipeMovement();
+		HandlePipeSpawning();
+	}
+
+	private void HandlePipeSpawning() {
+		pipeSpawnTimer -= Time.deltaTime;
+		if (pipeSpawnTimer < 0 ) {
+			pipeSpawnTimer += pipeSpawnTimermax;
+
+            float heightEdgeLimit = 10f;
+			float totalHeight = CAMERA_OTROGRAPHIC_SIZE * 2f;
+			float minHeight = gapSize * .5f + heightEdgeLimit;
+			float maxHeight = totalHeight - gapSize * .5f - heightEdgeLimit;
+
+			float height = UnityEngine.Random.Range(minHeight, maxHeight);
+			CreateGapPipes(50f ,gapSize ,PIPE_SPAWN_X_POSITION);
+		}
 	}
 
 	private void HandlePipeMovement() {
