@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,11 +14,17 @@ public class Level : MonoBehaviour
 	private const float PIPE_SPAWN_X_POSITION = +100f;
 
 	private List<Pipe> pipeList;
-
+    private int pipesSpawned;
 	private float pipeSpawnTimer;
 	private float pipeSpawnTimermax;
 	private float gapSize;
 
+	public enum Difficulty {
+		Easy,
+		Medium,
+		Hard,
+		Impossible
+	}
 
 	private void Awake()  {
 		pipeList = new List<Pipe>();
@@ -42,13 +50,14 @@ public class Level : MonoBehaviour
 		if (pipeSpawnTimer < 0 ) {
 			pipeSpawnTimer += pipeSpawnTimermax;
 
-            float heightEdgeLimit = 10f;
+            float heightLLimit = 15f;
+			float heightULimit = 10f;
 			float totalHeight = CAMERA_OTROGRAPHIC_SIZE * 2f;
-			float minHeight = gapSize * .5f + heightEdgeLimit;
-			float maxHeight = totalHeight - gapSize * .5f - heightEdgeLimit;
+			float minHeight = gapSize * .5f + heightLLimit;
+			float maxHeight = totalHeight - gapSize * .5f - heightULimit;
 
 			float height = UnityEngine.Random.Range(minHeight, maxHeight);
-			CreateGapPipes(50f ,gapSize ,PIPE_SPAWN_X_POSITION);
+			CreateGapPipes(height ,gapSize ,PIPE_SPAWN_X_POSITION);
 		}
 	}
 
@@ -65,13 +74,54 @@ public class Level : MonoBehaviour
 
 	}
 
-	private void CreateGapPipes(float GapY, float gapSize, float xPosition) {
-		CreatePipe(GapY - gapSize * .5f, xPosition, true);
-		CreatePipe(CAMERA_OTROGRAPHIC_SIZE * 2f - GapY - gapSize * .5f, xPosition, false);
+    private void SetDifficulty(Difficulty difficulty) {
+		switch (difficulty) {
+			case Difficulty.Easy:
+				gapSize = 50f;
+				break;
+			case Difficulty.Medium:
+				gapSize = 40f;
+				break;
+			case Difficulty.Hard:
+				gapSize =30f;
+				break;
+			case Difficulty.Impossible:
+				gapSize = 20f;
+				break;		
 
+		}
+	}
+
+    private Difficulty GetDifficulty() {
+		if (pipesSpawned >= 60) return Difficulty.Impossible;
+		if (pipesSpawned >= 40)	return Difficulty.Hard;
+		if (pipesSpawned >= 20) return Difficulty.Medium;
+		return Difficulty.Easy;		
+	
+		
+		
+		
+		// if (pipesSpawned >= 60) {
+		// 	return Difficulty.Impossible;
+		// }
+		// else if (pipesSpawned >= 40) {
+		// 	return Difficulty.Hard;
+		// }
+		// else if (pipesSpawned >= 20) {
+		// 	return Difficulty.Medium;
+		// }
+		// else {	
+		// 	return Difficulty.Easy;		
+		// }	
 	}
 
 
+	private void CreateGapPipes(float GapY, float gapSize, float xPosition) {
+		CreatePipe(GapY - gapSize * .5f, xPosition, true);
+		CreatePipe(CAMERA_OTROGRAPHIC_SIZE * 2f - GapY - gapSize * .5f, xPosition, false);
+        pipesSpawned++;
+		SetDifficulty(GetDifficulty());
+	}
 
 	private void CreatePipe(float height, float xPosition, bool createBottom) {
 		// Pipe Head Set up
@@ -107,7 +157,6 @@ public class Level : MonoBehaviour
 		Pipe pipe = new Pipe (pipeBody, pipeHead);
 		pipeList.Add(pipe);
 	}
-
 
 	//Handle signle pipe
 	private class Pipe {
