@@ -81,12 +81,15 @@ public class Level : MonoBehaviour
 				break;
 			case Difficulty.Medium:
 				gapSize = 40f;
+				pipeSpawnTimermax = 1.3f;
 				break;
 			case Difficulty.Hard:
 				gapSize =30f;
+				pipeSpawnTimermax = 1.1f;
 				break;
 			case Difficulty.Impossible:
 				gapSize = 20f;
+				pipeSpawnTimermax = 0.9f;
 				break;		
 
 		}
@@ -96,23 +99,7 @@ public class Level : MonoBehaviour
 		if (pipesSpawned >= 60) return Difficulty.Impossible;
 		if (pipesSpawned >= 40)	return Difficulty.Hard;
 		if (pipesSpawned >= 20) return Difficulty.Medium;
-		return Difficulty.Easy;		
-	
-		
-		
-		
-		// if (pipesSpawned >= 60) {
-		// 	return Difficulty.Impossible;
-		// }
-		// else if (pipesSpawned >= 40) {
-		// 	return Difficulty.Hard;
-		// }
-		// else if (pipesSpawned >= 20) {
-		// 	return Difficulty.Medium;
-		// }
-		// else {	
-		// 	return Difficulty.Easy;		
-		// }	
+		return Difficulty.Easy;
 	}
 
 
