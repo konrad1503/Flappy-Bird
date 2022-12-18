@@ -27,6 +27,7 @@ public class Level : MonoBehaviour
 	private float pipeSpawnTimer;
 	private float pipeSpawnTimermax;
 	private float gapSize;
+	private State state;
 
 	public enum Difficulty {
 		Easy,
@@ -35,24 +36,32 @@ public class Level : MonoBehaviour
 		Impossible
 	}
 
+	private enum State {
+		Playing,
+		BirdDead,
+	}
+
 	private void Awake()  {
 		instance = this;
 		pipeList = new List<Pipe>();
 		pipeSpawnTimermax = 1.5f;
 		gapSize = 50f;
+		state = State.Playing;
 	}
 
 	private void Start() {
-		/*
-		CreatePipe(40f, 20f, true);
-		CreatePipe(40f, 20f, false);
-		CreateGapPipes(50f, 10f, 40f);
-		*/
+		Bird.GetInstance().OnDied += Bird_OnDied;
+	}
+
+	private void Bird_OnDied(object sender, System.EventArgs e) {
+        state = State.BirdDead;
 	}
 
 	private void Update() {
+		if ( state == State.Playing) {
 		HandlePipeMovement();
 		HandlePipeSpawning();
+		}
 	}
 
 	private void HandlePipeSpawning() {
