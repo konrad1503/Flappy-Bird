@@ -16,7 +16,7 @@ public class GameOverWindow : MonoBehaviour
     }
 
     private static void TaskOnClick() {
-        SceneManager.LoadScene("GameScene");
+        Loading.Load(Loading.Scene.GameScene);
     }
 
     private void Start() {
