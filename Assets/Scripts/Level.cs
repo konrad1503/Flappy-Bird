@@ -210,7 +210,6 @@ public class Level : MonoBehaviour
 		public void DestroySelf() {
 			Destroy(pipeBodyTransform.gameObject);
 			Destroy(pipeHeadTransform.gameObject);
-
 		}
 
 

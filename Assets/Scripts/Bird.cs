@@ -6,6 +6,7 @@ using UnityEngine;
 public class Bird : MonoBehaviour {
 
     const float JUMP_AMOUNT = 100f;
+    const float SKY_LIMIT = 50f;
     
     public static Bird instance;
 
@@ -33,6 +34,7 @@ public class Bird : MonoBehaviour {
     }
     
     private void Update() { 
+        OutOfMap();
         switch (state) {
         default:
         case State.WaitingToStart:
@@ -50,8 +52,7 @@ public class Bird : MonoBehaviour {
             break;
         case State.BirdDead:
             break; 
-        }
-             
+        }                   
     }
     
     private void Jump() {
@@ -61,6 +62,13 @@ public class Bird : MonoBehaviour {
     private void OnTriggerEnter2D(Collider2D collider) {
         birdRigidbody2D.bodyType = RigidbodyType2D.Static;
         if (OnDied != null) OnDied(this, EventArgs.Empty);
+    }
+
+    private void OutOfMap() {
+        if (gameObject.transform.position.y >= SKY_LIMIT) {
+            birdRigidbody2D.bodyType = RigidbodyType2D.Static;
+            if (OnDied != null) OnDied(this, EventArgs.Empty);       
+        }
     }
 
 }

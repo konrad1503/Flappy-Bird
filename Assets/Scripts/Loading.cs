@@ -8,6 +8,7 @@ public static class Loading {
     public enum Scene {
         GameScene,
         Loading,
+        MainMenu,
     }
 
     private static Scene targetScene;

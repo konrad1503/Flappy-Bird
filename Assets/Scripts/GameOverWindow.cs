@@ -7,16 +7,24 @@ using UnityEngine.SceneManagement;
 public class GameOverWindow : MonoBehaviour
 {
     private Text scoreText;
+    private Text highscoreText;
 
     private void Awake() {
         scoreText = transform.Find("scoreText").GetComponent<Text>();
+        highscoreText = transform.Find("highscoreText").GetComponent<Text>();
 
         transform.Find("retryBtn").GetComponent<Button>().onClick.AddListener(TaskOnClick);
         Hide();
+
+        transform.Find("mmBtn").GetComponent<Button>().onClick.AddListener(mMenu);
     }
 
     private static void TaskOnClick() {
         Loading.Load(Loading.Scene.GameScene);
+    }
+
+    private static void mMenu() {
+        Loading.Load(Loading.Scene.MainMenu);
     }
 
     private void Start() {
@@ -25,6 +33,13 @@ public class GameOverWindow : MonoBehaviour
 
     private void Bird_OnDied(object sender, System.EventArgs e) {
         scoreText.text = Level.GetInstance().GetPipesPassedCount().ToString();
+
+        if (Level.GetInstance().GetPipesPassedCount() >= Score.GetHighscore()) {
+            highscoreText.text = "NEW HIGHSCORE";
+        }
+        else {
+            highscoreText.text = "HIGHSCORE:" + Score.GetHighscore();
+        }
         Show();
     }
 
